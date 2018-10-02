@@ -31,6 +31,7 @@ class GloveVectorizer:
     word2vec = {}
     embedding = []
     idx2word = []
+    # Direct link: http://nlp.stanford.edu/data/glove.6B.zip
     with open('../large_files/glove.6B/glove.6B.50d.txt') as f:
       # is just a space-separated text file in the format:
       # word vec[0] vec[1] vec[2] ...
