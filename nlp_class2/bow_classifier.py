@@ -64,6 +64,7 @@ class GloveVectorizer:
         if word in self.word2vec:
           vec = self.word2vec[word]
           vecs.append(vec)
+      # Bag of words model: the embedding of sentence is just the mean embedding of its words
       if len(vecs) > 0:
         vecs = np.array(vecs)
         X[n] = vecs.mean(axis=0)
