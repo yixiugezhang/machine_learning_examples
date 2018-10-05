@@ -34,10 +34,10 @@ stopwords = set(w.rstrip() for w in open('stopwords.txt'))
 
 # load the reviews
 # data courtesy of http://www.cs.jhu.edu/~mdredze/datasets/sentiment/index2.html
-positive_reviews = BeautifulSoup(open('electronics/positive.review').read())
+positive_reviews = BeautifulSoup(open('electronics/positive.review').read(), features="html.parser")
 positive_reviews = positive_reviews.findAll('review_text')
 
-negative_reviews = BeautifulSoup(open('electronics/negative.review').read())
+negative_reviews = BeautifulSoup(open('electronics/negative.review').read(), features="html.parser")
 negative_reviews = negative_reviews.findAll('review_text')
 
 # there are more positive reviews than negative reviews
@@ -71,7 +71,7 @@ def my_tokenizer(s):
     return tokens
 
 
-# create a word-to-index map so that we can create our word-frequency vectors later
+# create a word-to-index map(vacabulary as well) so that we can create our word-frequency vectors later
 # let's also save the tokenized versions so we don't have to tokenize again later
 word_index_map = {}
 current_index = 0
@@ -153,8 +153,8 @@ for word, index in iteritems(word_index_map):
 
 # check misclassified examples
 preds = model.predict(X)
+# Predicted as positive review
 P = model.predict_proba(X)[:,1] # p(y = 1 | x)
-
 # since there are many, just print the "most" wrong samples
 minP_whenYis1 = 1
 maxP_whenYis0 = 0
@@ -165,11 +165,13 @@ wrong_negative_prediction = None
 for i in range(N):
     p = P[i]
     y = Y[i]
+    # positive review predicted as negative
     if y == 1 and p < 0.5:
         if p < minP_whenYis1:
             wrong_positive_review = orig_reviews[i]
             wrong_positive_prediction = preds[i]
             minP_whenYis1 = p
+    # negative review predicted as positive
     elif y == 0 and p > 0.5:
         if p > maxP_whenYis0:
             wrong_negative_review = orig_reviews[i]
