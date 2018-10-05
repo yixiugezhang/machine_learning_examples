@@ -13,12 +13,14 @@ from builtins import range
 # GloVe: https://nlp.stanford.edu/projects/glove/
 # Direct link: http://nlp.stanford.edu/data/glove.6B.zip
 
+import io
 import numpy as np
 from sklearn.metrics.pairwise import pairwise_distances
 
-
+# Euclidean distance
 def dist1(a, b):
     return np.linalg.norm(a - b)
+# Cosine distance
 def dist2(a, b):
     return 1 - a.dot(b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
@@ -64,6 +66,7 @@ def find_analogies(w1, w2, w3):
 
   distances = pairwise_distances(v0.reshape(1, D), embedding, metric=metric).reshape(V)
   idxs = distances.argsort()[:4]
+  best_word = ''
   for idx in idxs:
     word = idx2word[idx]
     if word not in (w1, w2, w3): 
@@ -80,6 +83,7 @@ def nearest_neighbors(w, n=5):
 
   v = word2vec[w]
   distances = pairwise_distances(v.reshape(1, D), embedding, metric=metric).reshape(V)
+  # 0 index is itself with 0 distance
   idxs = distances.argsort()[1:n+1]
   print("neighbors of: %s" % w)
   for idx in idxs:
@@ -92,7 +96,7 @@ print('Loading word vectors...')
 word2vec = {}
 embedding = []
 idx2word = []
-with open('../large_files/glove.6B/glove.6B.50d.txt', encoding='utf-8') as f:
+with io.open('../large_files/glove.6B/glove.6B.50d.txt', encoding='utf-8') as f:
   # is just a space-separated text file in the format:
   # word vec[0] vec[1] vec[2] ...
   for line in f:
