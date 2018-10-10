@@ -51,9 +51,11 @@ if __name__ == '__main__':
 
   losses = []
   epochs = 1
+  # learning rate
   lr = 1e-1
   
   def softmax(a):
+    # subtract the max in a to avoid numerical overflow
     a = a - a.max()
     exp_a = np.exp(a)
     return exp_a / exp_a.sum(axis=1, keepdims=True)
@@ -76,6 +78,7 @@ if __name__ == '__main__':
       inputs = np.zeros((n - 1, V))
       targets = np.zeros((n - 1, V))
       inputs[np.arange(n - 1), sentence[:n-1]] = 1
+      # targets's column is shift-one-to-right for inputs 
       targets[np.arange(n - 1), sentence[1:]] = 1
 
       # get output predictions
